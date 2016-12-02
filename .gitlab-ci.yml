@@ -19,19 +19,8 @@ build-images:
     - docker build --pull -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
 
-test-1:
-  stage: test
-  script:
-    - docker pull $TEST_IMAGE
-    - docker run $TEST_IMAGE java -version
-
-test-2:
-  stage: test
-  script:
-    - docker pull $TEST_IMAGE
-    - docker run $TEST_IMAGE slice2java --version
-
 release-images:
+  stage: deploy
   script:
     - docker pull $TEST_IMAGE
     - docker tag $TEST_IMAGE $RELEASE_IMAGE
