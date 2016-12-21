@@ -14,13 +14,19 @@ before_script:
   - docker info
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
 
-build-images:
+build-image:
   stage: build
   script:
     - docker build --pull --build-arg MUMBLE_VERSION=$MUMBLE_VERSION -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
 
-release-images:
+test-image:
+  stage: test
+  script:
+    - docker run -d --name murmur $TEST_IMAGE
+    - docker inspect --format="{{ .State.Running }}" murmur || exit 1
+
+release-image:
   stage: deploy
   script:
     - docker pull $TEST_IMAGE
