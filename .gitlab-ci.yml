@@ -3,7 +3,8 @@ image: docker:latest
 
 variables:
   DOCKER_DRIVER: overlay
-  TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+  MUMBLE_VERSION: 1.2.18
+  TEST_IMAGE: $CI_REGISTRY_IMAGE:$MUMBLE_VERSION
   RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 services:
@@ -16,7 +17,7 @@ before_script:
 build-images:
   stage: build
   script:
-    - docker build --pull -t $TEST_IMAGE .
+    - docker build --pull --build-arg MUMBLE_VERSION=$MUMBLE_VERSION -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
 
 release-images:

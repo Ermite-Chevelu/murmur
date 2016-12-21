@@ -1,18 +1,24 @@
-FROM ubuntu:16.10
+FROM alpine:latest
 
 MAINTAINER Ermite Chevelu <ermite.chevelu@outlook.com>
 
-ENV MUMBLE_VERSION 1.2.16-2build1
+ARG MUMBLE_VERSION
 
 # Install mumble-server
-RUN apt-get -qq update \
-    && apt-get -y -V -qq install --no-install-recommends \
-      mumble-server=${MUMBLE_VERSION} \
-    && apt-get -qq clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apk add --no-cache wget &&\
+    cd /tmp/ &&\
+    wget --no-check-certificate https://github.com/mumble-voip/mumble/releases/download/${MUMBLE_VERSION}/murmur-static_x86-${MUMBLE_VERSION}.tar.bz2 &&\
+    tar -xjf murmur-static_x86-${MUMBLE_VERSION}.tar.bz2 &&\
+    mv /tmp/murmur-static_x86-${MUMBLE_VERSION}/murmur.x86 /usr/bin/murmurd &&\
+    mv /tmp/murmur-static_x86-${MUMBLE_VERSION}/murmur.ini /etc/murmur.ini &&\
+    mkdir -p /usr/share/slice &&\
+    mv /tmp/murmur-static_x86-${MUMBLE_VERSION}/ice/Murmur.ice /usr/share/slice/Murmur.ice &&\
+    adduser -S murmur &&\
+    rm -r /tmp/* &&\
+    apk del --no-cache wget
 
 # Expose apporpriate ports
 EXPOSE 64738/tcp 64738/udp 6502/tcp
 
 # Run murmur
-ENTRYPOINT ["/usr/sbin/murmurd", "-ini", "/etc/mumble-server.ini", "-fg", "-v"]
+ENTRYPOINT ["/usr/bin/murmurd", "-ini", "/etc/murmur.ini", "-fg", "-v"]
