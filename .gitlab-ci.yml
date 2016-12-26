@@ -1,14 +1,20 @@
 ---
 image: docker:latest
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+  - release
+  - deploy
 
 variables:
   DOCKER_DRIVER: overlay
   MUMBLE_VERSION: 1.2.18
-  TEST_IMAGE: $CI_REGISTRY_IMAGE:$MUMBLE_VERSION
+  TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+  TAG_IMAGE: $CI_REGISTRY_IMAGE:$MUMBLE_VERSION
   RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
-
-services:
-  - docker:dind
 
 before_script:
   - docker info
@@ -27,10 +33,20 @@ test-image:
     - docker inspect --format="{{ .State.Running }}" murmur || exit 1
 
 release-image:
-  stage: deploy
+  stage: release
   script:
     - docker pull $TEST_IMAGE
     - docker tag $TEST_IMAGE $RELEASE_IMAGE
-    - docker push $RELEASE_IMAGE
+    - docker tag $TEST_IMAGE $TAG_IMAGE
+    - docker push $CI_REGISTRY_IMAGE
   only:
     - master
+    - tags
+
+deploy:
+  stage: deploy
+  script:
+    - echo "TODO make deploy script"
+  only:
+    - master
+    - tags

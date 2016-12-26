@@ -14,8 +14,8 @@ RUN apk add --no-cache wget ca-certificates &&\
     mv /tmp/murmur-static_x86-${MUMBLE_VERSION}/murmur.ini /etc/murmur.ini &&\
     mv /tmp/murmur-static_x86-${MUMBLE_VERSION}/ice/Murmur.ice /usr/share/slice/Murmur.ice &&\
     sed 's/^database=$/database=\/var\/lib\/murmur\/murmur.sqlite/;\
-		s/^#uname=$/uname=murmur/' \
-		-i /etc/murmur.ini || return 1 &&\
+  		s/^#uname=$/uname=murmur/' \
+  		-i /etc/murmur.ini || return 1 &&\
     adduser -H -D -s /dev/null murmur &&\
     chown murmur:murmur /var/lib/murmur/ &&\
     rm -r /tmp/* &&\
