@@ -40,7 +40,6 @@ release-image:
     - docker tag $TEST_IMAGE $TAG_IMAGE
     - docker push $CI_REGISTRY_IMAGE
   only:
-    - master
     - tags
 
 deploy:
@@ -48,5 +47,4 @@ deploy:
   script:
     - echo "TODO make deploy script"
   only:
-    - master
     - tags
