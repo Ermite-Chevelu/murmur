@@ -1,6 +1,6 @@
 FROM alpine:3.5
 
-MAINTAINER Ermite Chevelu <ermite.chevelu@outlook.com>
+MAINTAINER Ermite Chevelu
 
 ARG MUMBLE_VERSION=1.2.18
 
