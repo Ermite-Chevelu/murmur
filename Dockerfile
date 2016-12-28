@@ -1,14 +1,13 @@
-FROM alpine:latest
+FROM alpine:3.5
 
 MAINTAINER Ermite Chevelu <ermite.chevelu@outlook.com>
 
-ARG MUMBLE_VERSION
+ARG MUMBLE_VERSION=1.2.18
 
 # Install mumble-server
-RUN apk add --no-cache wget ca-certificates && \
+RUN apk add --no-cache curl && \
     cd /tmp/ && \
-    wget https://github.com/mumble-voip/mumble/releases/download/${MUMBLE_VERSION}/murmur-static_x86-${MUMBLE_VERSION}.tar.bz2 && \
-    tar -xjf murmur-static_x86-${MUMBLE_VERSION}.tar.bz2 && \
+    curl -L https://github.com/mumble-voip/mumble/releases/download/${MUMBLE_VERSION}/murmur-static_x86-${MUMBLE_VERSION}.tar.bz2 | tar -xj && \
     mkdir -p /usr/share/slice/ /var/lib/murmur/ && \
     mv /tmp/murmur-static_x86-${MUMBLE_VERSION}/murmur.x86 /usr/bin/murmurd && \
     mv /tmp/murmur-static_x86-${MUMBLE_VERSION}/murmur.ini /etc/murmur.ini && \
@@ -18,8 +17,8 @@ RUN apk add --no-cache wget ca-certificates && \
   		-i /etc/murmur.ini || return 1 && \
     adduser -H -D -s /dev/null murmur && \
     chown murmur:murmur /var/lib/murmur/ && \
-    cd && rm -r /tmp/* && \
-    apk del --no-cache wget ca-certificates
+    apk del --no-cache curl && \
+    rm -rf /tmp/*
 
 # Expose apporpriate ports
 EXPOSE 64738/tcp 64738/udp 6502/tcp
