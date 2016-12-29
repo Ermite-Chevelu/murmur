@@ -12,12 +12,9 @@ stages:
 variables:
   DOCKER_DRIVER: overlay
   MUMBLE_VERSION: 1.2.18
-  TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
-  TAG_IMAGE: $CI_REGISTRY_IMAGE:$MUMBLE_VERSION
-  RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+  TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_BUILD_ID
 
 before_script:
-  - docker info
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
 
 build-image:
@@ -36,8 +33,8 @@ release-image:
   stage: release
   script:
     - docker pull $TEST_IMAGE
-    - docker tag $TEST_IMAGE $RELEASE_IMAGE
-    - docker tag $TEST_IMAGE $TAG_IMAGE
+    - docker tag $TEST_IMAGE $CI_REGISTRY_IMAGE:latest
+    - docker tag $TEST_IMAGE $CI_REGISTRY_IMAGE:$MUMBLE_VERSION
     - docker push $CI_REGISTRY_IMAGE
   only:
     - tags

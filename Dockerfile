@@ -2,6 +2,9 @@ FROM alpine:3.5
 
 MAINTAINER Ermite Chevelu
 
+LABEL version=1.2.18 \
+      description="Lightweight image with up-to-date Mumble server."
+
 ARG MUMBLE_VERSION=1.2.18
 
 # Install mumble-server
