@@ -2,7 +2,7 @@
 [![Version](https://images.microbadger.com/badges/version/ermite/murmur.svg)]() [![Layers](https://images.microbadger.com/badges/image/ermite/murmur.svg)]()
 [![Docker Automated buil](https://img.shields.io/docker/automated/ermite/murmur.svg)]()
 
-# Supported tags and respective Dockerfile links
+# Supported tags and respective `Dockerfile` links
 
 * `1.2.18`, `latest` [(1.2.18/Dockerfile)](https://github.com/Ermite-Chevelu/murmur/blob/1.2.18/Dockerfile)
 
@@ -14,12 +14,12 @@ $ docker run -d -p 64738:64738/tcp -p 64738:64738/udp registry.gitlab.com/ermite
 
 This image uses default configuration file provides by mumble with only two changes:
 
-* Database path is set to : `/var/lib/murmur/murmur.sqlite` (default configuration doewn't provide any path and database file is created in `/etc/`)
-* Set `uname=murmur` to not run server as `root`
+* Database path is set to : `/var/lib/murmur/murmur.sqlite` (default configuration file doesn't provide any path and database file is created in `/etc/`)
+* Set `uname=murmur` to run server as non `root` user
 
 # Advance configuration and persistence
 
-To use a custom configuration file and persist database run it with :
+To use custom configuration file and persist database simply mount a volume with `murmur.ini` configuration file and another to store database file :
 
 ```
 $ docker run -d \
@@ -30,9 +30,23 @@ $ docker run -d \
   --name murmur registry.gitlab.com/ermite-chevelu/murmur
 ```
 
-# Setup superuser password
+# Get `SuperUser` password
 
-To setup the `superuser` password, execute :
+On the first start, if no database already exists, `SuperUser` password can be retrieve with :
+
+```
+$ docker logs murmur 2>&1 | grep Password
+```
+
+Result should be something like :
+
+```
+<W>2016-12-30 14:35:11.932 1 => Password for 'SuperUser' set to 'Sh\QMd\l;'
+```
+
+# Set `SuperUser` password
+
+To setup `SuperUser` password, execute :
 
 ```
 $ docker exec murmur murmurd -supw <password>
