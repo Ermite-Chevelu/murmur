@@ -23,6 +23,8 @@ RUN apk add --no-cache curl && \
     apk del --no-cache curl && \
     rm -rf /tmp/*
 
+VOLUME /var/lib/murmur/
+
 # Expose apporpriate ports
 EXPOSE 64738/tcp 64738/udp 6502/tcp
 
