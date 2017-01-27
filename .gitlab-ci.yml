@@ -7,12 +7,10 @@ stages:
   - build
   - test
   - release
-  - deploy
 
 variables:
   DOCKER_DRIVER: overlay
-  MUMBLE_VERSION: 1.2.18
-  TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+  TEST_IMAGE: $CI_REGISTRY_IMAGE:develop
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
@@ -20,12 +18,13 @@ before_script:
 build-image:
   stage: build
   script:
-    - docker build --pull --build-arg MUMBLE_VERSION=$MUMBLE_VERSION -t $TEST_IMAGE .
+    - docker build --pull -t $TEST_IMAGE .
     - docker push $TEST_IMAGE
 
 test-image:
   stage: test
   script:
+    - docker pull $TEST_IMAGE
     - docker run -d --name murmur $TEST_IMAGE
     - docker inspect --format="{{ .State.Running }}" murmur || exit 1
 
@@ -34,14 +33,7 @@ release-image:
   script:
     - docker pull $TEST_IMAGE
     - docker tag $TEST_IMAGE $CI_REGISTRY_IMAGE:latest
-    - docker tag $TEST_IMAGE $CI_REGISTRY_IMAGE:$MUMBLE_VERSION
+    - docker tag $TEST_IMAGE $CI_REGISTRY_IMAGE:$CI_BUILD_TAG
     - docker push $CI_REGISTRY_IMAGE
-  only:
-    - tags
-
-deploy:
-  stage: deploy
-  script:
-    - echo "TODO make deploy script"
   only:
     - tags
