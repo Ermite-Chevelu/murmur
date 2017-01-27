@@ -5,8 +5,8 @@
 
 # Supported tags and respective `Dockerfile` links
 
-* `1.2.18` [(1.2.18/Dockerfile)](https://github.com/Ermite-Chevelu/murmur/blob/1.2.18/Dockerfile)
 * `1.2.19`, `latest` [(1.2.19/Dockerfile)](https://github.com/Ermite-Chevelu/murmur/blob/1.2.19/Dockerfile)
+* `1.2.18` [(1.2.18/Dockerfile)](https://github.com/Ermite-Chevelu/murmur/blob/1.2.18/Dockerfile)
 
 # Usage
 
